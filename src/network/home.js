@@ -10,3 +10,10 @@ export function getHomeMultidata(){
         }
     )
 }
+export function getHomeGoods(type){
+    return request({
+        url:'/getmain.php',
+        method:'post',
+        data:qs.stringify({"keyflag" : "class","class" : type})
+    })
+}

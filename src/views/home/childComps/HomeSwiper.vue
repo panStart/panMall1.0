@@ -1,7 +1,7 @@
 <template>
   <div>
     <swiper v-if="lunbotuList.length">  
-      <swiper-item v-for = "item in lunbotuList">
+      <swiper-item v-for = "(item,index) in lunbotuList" :key="index">
            <img :src="'http://47.106.248.143/app/img/'+item.img_src" alt="" >
       </swiper-item>
     </swiper>   
