@@ -26,20 +26,6 @@ export default {
     };
   },
   components: {},
-  methods: {
-      //重启上拉加载
-       finishPullUp(){
-           this.scroll.finishPullUp()
-       },
-      //滑动到顶部
-       scrollTo(x,y,time=300) {
-           this.scroll && this.scroll.scrollTo(x,y,time)
-       }, 
-      //刷新页面 重新计算cobtent高度
-       refresh(){  
-           this.scroll && this.scroll.refresh()
-       },
-  },
   mounted () {
       // 1.创建对象
         this.scroll = new BScroll(this.$refs.wrapper,{
@@ -60,7 +46,35 @@ export default {
                 this.$emit('pullingUp') 
             })
         }
-  }
+            //    console.log(this.scroll.scrollerHeight)
+  },
+  methods: {
+      //重启上拉加载
+       finishPullUp(){
+           this.scroll.finishPullUp()
+       },
+      //滑动到顶部
+       scrollTo(x,y,time=300) {
+           console.log("滑动"+y);
+           console.log(this.scroll);
+           this.scroll && this.scroll.scrollTo(x,y,time)
+       }, 
+      //刷新页面 重新计算cobtent高度
+       refresh(){  
+           //防止scroll没有值
+        //    console.log('-----');
+           
+           this.scroll && this.scroll.refresh()
+        //    console.log(this.scroll.scrollerHeight)
+       },
+       //记录离开时的位置
+       getScrollY(){
+           return this.scroll? this.scroll.y : 0
+       }
+
+       
+  },
+  
 }
 </script>
 <style scoped>
