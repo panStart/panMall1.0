@@ -1,9 +1,9 @@
 <template>
-  <div id="Detail">
-     <detail-nav-bar class="detail-nav" /> 
+  <div id="detail">
+     <detail-nav-bar class="detail-nav" ref="nav" @titleClick="titleClick"/> 
      <scroll class="content" ref="scroll"
       :probe-type="3" 
-      
+      @scroll="contentScroll"
     > 
       <detail-swiper :detailList="detailList" /> 
       <detail-base-info :goods="goods"/>
@@ -98,6 +98,7 @@
         
     </scroll>
     <back-top @click.native="backTop" v-show="isShowBackTop"></back-top>
+    <detail-bottom-bar @addToCart="addToCart"></detail-bottom-bar>
   </div>
 </template>
 <script>
@@ -108,20 +109,25 @@ import DetailShopInfo from './childComps/DetailShopInfo'
 import DetailGoodsInfo from './childComps/DetailGoodsInfo'
 import DetailParamInfo from './childComps/DetailParamInfo'
 import DetailCommentInfo from './childComps/DetailCommentInfo'
+import DetailBottomBar from './childComps/DetailBottomBar'
 
 import {getDetail,getDetailGoods,Goods} from 'network/detail'
 
 import Scroll from 'components/common/scroll/Scroll'
 import GoodsList from 'components/content/goods/GoodsList'
+import {itemListenerMixin,backTopMIXin} from "common/mixin"
 export default {
   name:'Detail',
+  mixins:[itemListenerMixin,backTopMIXin],
   data () {
     return {
       flag:null,
       detailList:[],
       goods:{},
       detailInfo:[],
-      recommends:[]
+      recommends:[],
+      themeTopYs:[],
+      currentIndex:0,
     };
   },
   components: {
@@ -133,6 +139,7 @@ export default {
      DetailParamInfo,
      DetailCommentInfo,
      GoodsList,
+     DetailBottomBar,
 
      Scroll
   },
@@ -140,6 +147,14 @@ export default {
     this.getDetailSwiperdata()
     this.flag = this.$route.params.flag
     this.getDetailGoods(this.flag)
+  },
+  updated() {
+    this.themeTopYs = [];
+    this.themeTopYs.push(0);
+    this.themeTopYs.push(this.$refs.params.$el.offsetTop);
+    this.themeTopYs.push(this.$refs.comment.$el.offsetTop);
+    this.themeTopYs.push(this.$refs.recommends.$el.offsetTop);
+    this.themeTopYs.push(Number.MAX_VALUE);
   },
   methods: {
    getDetailSwiperdata(){
@@ -160,13 +175,75 @@ export default {
         
       })
     },
+    contentScroll(position) {
+      const positionY = -position.y
+      const length = this.themeTopYs.length
+      // for(let i = 0; i < length; i++){
+      //   console.log(i);
+      //   /**
+      //    * 0:0- this.themeTopYs[1]
+      //    * 1:this.themeTopYs[1]- this.themeTopYs[2]
+      //    * 2:this.themeTopYs[2]- this.themeTopYs[3]
+      //    * 3:this.themeTopYs[3]- 无穷
+      //    */
+      //   if(this.currentIndex !== i && ((i < length - 1 && positionY >= this.themeTopYs[i] && positionY < this.themeTopYs[i+1]) 
+      //   || (i === length - 1 && positionY >= this.themeTopYs[i]))){
+      //     console.log(i);
+      //     this.currentIndex = i
+      //     this.$refs.nav.currentIndex = this.currentIndex
+      //   }
+      // }
+      for(let i = 0; i < length-1; i++){
+        if(this.currentIndex !== i && 
+        (positionY >= this.themeTopYs[i] && positionY < this.themeTopYs[i+1]) 
+        ){
+          // console.log(i);
+          this.currentIndex = i
+          this.$refs.nav.currentIndex = this.currentIndex
+        }
+      }
+      //显示是否回顶部
+      this.listenSHopBackTop(position)
+    },
+    //点击到相应位置
+    titleClick(index){
+      // console.log(index);
+      //scroll运动的值为负值
+      // console.log(index);
+      
+      this.$refs.scroll.scrollTo(0, -this.themeTopYs[index], 100) 
+    },
+    addToCart(){
+      const product = {}
+      product.image = this.detailList[0].img_src
+      product.title = this.goods.title
+      product.price = 56
+      product.iid = this.flag//必须的独立标识
+      // console.log('123')
+      this.$store.commit('addCart', product)
+      // this.$store.dispatch('addCart', product).then(res => {
+      //     console.log(res)
+      // })
+      // this.addCart(product).then(res => {
+      //     // this.show = true
+      //     // this.message = res
+      //     // setTimeout(() => {
+      //     //   this.show = false
+      //     //   this.message = ''
+      //     // },1500)
+      //     // console.log(this.$toast);
+      //     this.$toast.show(res,2000)
+          
+          
+      // })
+    }
   }
 }
 </script>
 <style scoped>
 #detail{
   position: relative;
-  z-index: 9;
+  z-index: 99;
   background-color: #fff;
   height: 100vh;
 }

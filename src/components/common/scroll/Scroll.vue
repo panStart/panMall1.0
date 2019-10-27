@@ -55,14 +55,14 @@ export default {
        },
       //滑动到顶部
        scrollTo(x,y,time=300) {
-           console.log("滑动"+y);
-           console.log(this.scroll);
+        //    console.log("滑动"+y);
+        //    console.log(this.scroll);
            this.scroll && this.scroll.scrollTo(x,y,time)
        }, 
       //刷新页面 重新计算cobtent高度
        refresh(){  
            //防止scroll没有值
-        //    console.log('-----');
+           console.log('-----');
            
            this.scroll && this.scroll.refresh()
         //    console.log(this.scroll.scrollerHeight)

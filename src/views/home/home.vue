@@ -42,7 +42,9 @@ import FeatureView from './childComps/Feature'
 
 import {getHomeMultidata,getHomeGoods} from 'network/home'
 import {debounce} from 'common/utils.js'
+import {itemListenerMixin,backTopMIXin} from "common/mixin"
 export default {
+    mixins:[itemListenerMixin,backTopMIXin],
     data () {
         return {
             lunbotuList:[],
@@ -58,7 +60,7 @@ export default {
               "信号分析":{list:[]}
             },
             currentType:"数电实验",
-            isShowBackTop:false,
+            
             isTabFixed:false,
             tabOffsetTop:0,
             saveY:0
@@ -74,7 +76,7 @@ export default {
         TabControl,
         GoodsList,
         Scroll,
-        BackTop,
+        // BackTop,
 
         HomeSwiper,
         RecommentView,
@@ -103,18 +105,18 @@ export default {
     },
       //记录路由的活跃状态
     activated () {
-      console.log('活跃');
-      console.log(this.saveY);
-      console.log(this.$refs.scroll);
+      // console.log('活跃');
+      // console.log(this.saveY);
+      // console.log(this.$refs.scroll);
       
       this.$refs.scroll.scrollTo(0,this.saveY,0)
       this.$refs.scroll.refresh()
     },
     deactivated () {
-       console.log('不活跃');
+      //  console.log('不活跃');
       //1.保存滑动距离
       this.saveY = this.$refs.scroll.getScrollY()
-      console.log(this.saveY);
+      // console.log(this.saveY);
       
       //2.离开home页面取消bus监听事件
       this.$bus.$off('itemImageLoad',this.itemImgListener)
@@ -143,14 +145,15 @@ export default {
       //滑动不好下滑，图片问题
       // this.$refs.scroll.scrollRefresh()
       },
-      backTop(){  
-        // console.log(this.$refs.scroll.message);
-        this.$refs.scroll.scrollTo(0,0)
-      },
+      // backTop(){  
+      //   // console.log(this.$refs.scroll.message);
+      //   this.$refs.scroll.scrollTo(0,0)
+      // },
       contentScroll(position){
         // console.log(position);
         // 1.判断BackTop是否显示
-        this.isShowBackTop = (-position.y) > 250 ;
+        this.listenSHopBackTop(position)
+        // this.isShowBackTop = (-position.y) > 250 ;
         //2.局等tabControl是否吸顶（position：fixed）
         this.isTabFixed = (-position.y) > this.tabOffsetTop ;
       },
@@ -170,7 +173,7 @@ export default {
           // console.log(res);
           var arr = JSON.parse(res);
           this.lunbotuList = arr;
-          console.log(this.lunbotuList)
+          // console.log(this.lunbotuList)
         })
       },
       getHomeGoods(type){
