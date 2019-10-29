@@ -1,5 +1,5 @@
 <template>
-    <swiper>
+    <swiper v-if="detailList.length">
         <swiper-item v-for="item in detailList">
            <img :src="'http://47.106.248.143/app/img/'+item.img_src" alt="" >
         </swiper-item>
