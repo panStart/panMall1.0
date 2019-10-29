@@ -5,9 +5,9 @@ import actions from './actions'
 import getters from './getters'
 
 Vue.use(Vuex)
-
+const cartList = JSON.parse(localStorage.getItem('cartList')||'[]')
 const state = {
-    cartList:[]
+    cartList:cartList 
 }
 const store = new Vuex.Store({
     state, 

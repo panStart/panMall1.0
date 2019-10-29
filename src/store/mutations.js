@@ -1,16 +1,15 @@
+import { ADD_COUNTER,ADD_TO_CART } from './mutation-types'
 export default {
-    addCart(state, payload) {
-        let flag = false
-        state.cartList.some(item => {
-            if(item.iid == payload.iid){
-                item.count += 1
-                flag = true
-                return true
-            }
-        })
-        if(!flag){
-            payload.count = 1
-            state.cartList.push(payload)
-        }
+    [ADD_COUNTER](state, payload) {
+        // console.log(state.cartList);
+        
+        payload.count++
+        localStorage.setItem('cartList',JSON.stringify(state.cartList))
+    },
+    [ADD_TO_CART](state, payload) {
+        // console.log(state.cartList);
+        payload.checked = true 
+        state.cartList.push(payload)
+        localStorage.setItem('cartList',JSON.stringify(state.cartList))
     }
 }

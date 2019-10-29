@@ -1,4 +1,4 @@
-<template>
+ <template>
   <div id="detail">
      <detail-nav-bar class="detail-nav" ref="nav" @titleClick="titleClick"/> 
      <scroll class="content" ref="scroll"
@@ -220,10 +220,8 @@ export default {
       product.price = 56
       product.iid = this.flag//必须的独立标识
       // console.log('123')
-      this.$store.commit('addCart', product)
-      // this.$store.dispatch('addCart', product).then(res => {
-      //     console.log(res)
-      // })
+      // this.$store.commit('addCart', product)
+      this.$store.dispatch('addCart', product)
       // this.addCart(product).then(res => {
       //     // this.show = true
       //     // this.message = res
